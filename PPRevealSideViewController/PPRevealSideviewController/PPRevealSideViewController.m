@@ -11,7 +11,7 @@
 #import <objc/runtime.h>
 
 #pragma mark - Unit constants
-static const CGFloat DefaultOffset = 70.0;
+static const CGFloat DefaultOffset = 140.0;
 static const CGFloat DefaultOffsetBouncing = 5.0;
 static const CGFloat OpenAnimationTime = 0.3;
 static const CGFloat OpenAnimationTimeBouncingRatio = 0.3;
@@ -1251,6 +1251,7 @@ static const CGFloat MAX_TRIGGER_OFFSET = 100.0;
 - (void) gestureRecognizerDidPan:(UIPanGestureRecognizer*)panGesture {
     
     if(_animationInProgress) return;
+    if (panGesture.state == UIGestureRecognizerStateBegan) return;
     
     CGPoint currentPoint = [panGesture translationInView:self.view];
     
@@ -1277,7 +1278,7 @@ static const CGFloat MAX_TRIGGER_OFFSET = 100.0;
                         _currentPanDirection = PPRevealSideDirectionBottom;
         
     }
-    
+
     if (_currentPanDirection == PPRevealSideDirectionNone) return;
     
     // if the direction is disabled, then cancel the gesture
@@ -1286,6 +1287,15 @@ static const CGFloat MAX_TRIGGER_OFFSET = 100.0;
         panGesture.enabled = NO;
         panGesture.enabled = YES;
         return;
+    }else {
+        NSNumber *directionNumber = [NSNumber numberWithInt:_currentPanDirection];
+        UIViewController *viewController = [_viewControllers objectForKey:directionNumber];
+        if (viewController == nil) {
+            // little trick to cancel the gesture. Otherwise, as long as we pan, we continue to pass here ...
+            panGesture.enabled = NO;
+            panGesture.enabled = YES;
+            return;
+        }
     }
     
     // If the direction is left or right, then cancel the swipe gesture to avoid double scrolling

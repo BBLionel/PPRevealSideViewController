@@ -237,6 +237,8 @@ If you want to pop a new center controller, then do the following :
 
 @property (nonatomic, readonly) PPRevealSideDirection sideDirectionOpened;
 
+@property (nonatomic, assign) PPRevealSideDirection   disabledPanGestureDirection;
+
 /**---------------------------------------------------------------------------------------
  * @name Init method
  *  ---------------------------------------------------------------------------------------
